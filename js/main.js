@@ -57,7 +57,7 @@
 		}
 	]);
 
-	var tasksView = new App.Views.Tasks({ model: tasks });
+	var tasksView = new App.Views.Tasks({ collection: tasks });
 
 	$('.tasks').html(tasksView.render().el);
 
