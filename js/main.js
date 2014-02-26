@@ -22,4 +22,13 @@
 		}
 	});
 
+	var task = new App.Models.Task({
+		title: "Get going buddy",
+		priority: 5
+	});
+
+	var taskView = new App.Views.Task({ model: task });
+
+	$('.tasks').html(taskView.render().el);
+
 })();
