@@ -10,7 +10,13 @@
 		return _.template( $('#' + id).html() );
 	}
 
-	App.Models.Task = Backbone.Model.extend({});
+	App.Models.Task = Backbone.Model.extend({
+		validate: function (attrs) {
+			if (! $.trim(attrs.title)) {
+				return 'Empty value is not allowed!';
+			}
+		}
+	});
 
 	App.Collections.Tasks = Backbone.Collection.extend({
 		model: App.Models.Task
@@ -36,8 +42,36 @@
 	App.Views.Task = Backbone.View.extend({
 		tagName: 'li',
 
+		template: template('taskTemplate'),
+
+		initialize: function () {
+			this.model.on('change', this.render, this);
+			this.model.on('remove', this.remove, this);
+		},
+
+		events: {
+			'click .edit': 'editTask',
+			'click .delete': 'destroyTask'
+		},
+
+		editTask: function () {
+			var newTaskTitle = prompt("Edit this", this.model.get('title'));
+
+			if (!newTaskTitle) {return};
+			this.model.set('title', newTaskTitle);
+		},
+
+		destroyTask: function () {
+			this.model.destroy();
+		},
+
+		remove: function () {
+			this.$el.remove();
+		},
+
 		render: function () {
-			this.$el.html( this.model.get('title') );
+			var source = this.template(this.model.toJSON());
+			this.$el.html(source);
 			return this;
 		}
 	});
