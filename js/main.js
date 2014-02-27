@@ -11,10 +11,12 @@
 		return _.template( $('#' + id).html() );
 	}
 
+	var vent = _.extend({}, Backbone.Events);
+
 	App.Router = Backbone.Router.extend({
 		routes: {
 			'': 'index',
-			'account': 'account',
+			'appointment/:id': 'showAppointment',
 			'*other': 'default'
 		},
 
@@ -22,12 +24,22 @@
 			console.log('Welcome to Homepage.');
 		},
 
-		account: function(){
-			console.log('Edit your account settings.');
+		showAppointment: function(id) {
+			vent.trigger('appointment:show', id);
 		},
 
-		default: function(){
+		default: function() {
 			console.log('404 page!!!');
+		}
+	});
+
+	App.Views.Appointment = Backbone.View.extend({
+		initialize: function() {
+			vent.on('appointment:show', this.show, this);
+		},
+
+		show: function(id) {
+			console.log('showing appointment ' + id);
 		}
 	});
 
@@ -141,6 +153,8 @@
 			priority: 3
 		}
 	]);
+
+	new App.Views.Appointment;
 
 	var newTaskView = new App.Views.AddTask({ collection: tasks });
 
