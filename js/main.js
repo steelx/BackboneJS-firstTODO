@@ -25,6 +25,10 @@
 	App.Views.Tasks = Backbone.View.extend({
 		tagName: 'ul',
 
+		initialize: function(){
+			this.collection.on('add', this.addOne, this);
+		},
+
 		render: function () {
 			this.collection.each(this.addOne, this);
 			return this;
@@ -76,6 +80,32 @@
 		}
 	});
 
+	App.Views.AddTask = Backbone.View.extend({
+		el: '#addTaskForm',
+
+		initialize: function () {
+			// body...
+		},
+
+		events: {
+			'submit': 'submit'
+		},
+
+		submit: function (e) {
+			e.preventDefault();
+			var newTaskTitle = $(e.currentTarget).find('input[type=text]').val();
+			$(e.currentTarget).find('input[type=text]').val('')
+
+			// if(! newTaskTitle){return};
+			var newTask = new App.Models.Task({
+				title: newTaskTitle
+			});
+
+			this.collection.add(newTask);
+
+		}
+	});
+
 	var tasks = new App.Collections.Tasks([
 		{
 			title: "Get BackboneJS",
@@ -90,6 +120,8 @@
 			priority: 3
 		}
 	]);
+
+	var newTaskView = new App.Views.AddTask({ collection: tasks });
 
 	var tasksView = new App.Views.Tasks({ collection: tasks });
 
