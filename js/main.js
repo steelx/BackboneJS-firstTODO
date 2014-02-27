@@ -3,12 +3,33 @@
 	window.App = {
 		Models: {},
 		Collections: {},
-		Views: {}
+		Views: {},
+		Router: {}
 	};
 
 	window.template = function (id) {
 		return _.template( $('#' + id).html() );
 	}
+
+	App.Router = Backbone.Router.extend({
+		routes: {
+			'': 'index',
+			'account': 'account',
+			'*other': 'default'
+		},
+
+		index: function(){
+			console.log('Welcome to Homepage.');
+		},
+
+		account: function(){
+			console.log('Edit your account settings.');
+		},
+
+		default: function(){
+			console.log('404 page!!!');
+		}
+	});
 
 	App.Models.Task = Backbone.Model.extend({
 		validate: function (attrs) {
@@ -126,5 +147,8 @@
 	var tasksView = new App.Views.Tasks({ collection: tasks });
 
 	$('.tasks').html(tasksView.render().el);
+
+	new App.Router;
+	Backbone.history.start();
 
 })();
